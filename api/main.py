@@ -5,9 +5,18 @@ from starlette.responses import FileResponse
 from pathlib import Path
 import dataclasses
 from typing import Literal
+from fastapi.middleware.cors import CORSMiddleware
 
 # Initialize FastAPI and SocketIO
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods
+    allow_headers=["*"],  # Allow all headers
+)
+
 sio = socketio.AsyncServer(async_mode='asgi')
 app.mount('/ws', socketio.ASGIApp(sio))
 
