@@ -15,15 +15,12 @@ app.mount('/ws', socketio.ASGIApp(sio))
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
-
 @dataclasses.dataclass
-class File:
+class WatchedFile:
     path: str
     state: Literal["playing", "paused"]
 
-
-watched_file = File(path="file.txt", state="paused")
-
+watched_file = WatchedFile(path="file.txt", state="paused")
 
 @app.post("/upload/")
 async def upload_file(file: UploadFile = File(...)):
@@ -39,7 +36,6 @@ async def upload_file(file: UploadFile = File(...)):
     file_url = f"/files/{file.filename}"
     return JSONResponse(content={"file_url": file_url})
 
-
 @app.get("/files/{filename}")
 async def get_file(filename: str):
     file_path = UPLOAD_DIR / filename
@@ -47,19 +43,20 @@ async def get_file(filename: str):
         return FileResponse(file_path)
     return JSONResponse(content={"error": "File not found"}, status_code=404)
 
-
 @app.post("/change-file/")
 async def change_file_state(new_state: str):
     watched_file.state = new_state
     await sio.emit('file_state_changed', {'path': watched_file.path, 'state': watched_file.state})
     return JSONResponse(content={"message": "File state updated"})
 
-
 @sio.event
 async def connect(sid, environ):
     await sio.emit('file_state', {'path': watched_file.path, 'state': watched_file.state}, room=sid)
 
-
 @sio.event
 async def disconnect(sid):
     print('Client disconnected')
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app)
