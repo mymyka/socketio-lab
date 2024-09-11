@@ -7,7 +7,7 @@ app = FastAPI()
 sio = socketio.AsyncServer(cors_allowed_origins='*', async_mode='asgi')
 
 socket_app = socketio.ASGIApp(sio)
-app.mount("/ws", socket_app)
+app.mount("/ws/", socket_app)
 
 
 @app.get("/")
@@ -26,4 +26,4 @@ async def disconnect(sid):
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=7777, lifespan="on", reload=True)
+    uvicorn.run("main:app", host="localhost", port=8000, lifespan="on", reload=True)
