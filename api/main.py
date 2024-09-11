@@ -11,14 +11,14 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*", 'http://localhost:3000/'],  # Allow all origins
+    allow_origins=["*"],  # Allow all origins
     allow_credentials=True,
     allow_methods=["*"],  # Allow all methods
     allow_headers=["*"],  # Allow all headers
 )
 
-sio = socketio.AsyncServer(async_mode='asgi', cors_allowed_origins='*, http://localhost:3000/')
-app.mount('/', socketio.ASGIApp(sio))
+sio = socketio.AsyncServer(async_mode='asgi', cors_allowed_origins='*')
+app.mount('/ws', socketio.ASGIApp(sio))
 
 # Directory where files will be stored
 UPLOAD_DIR = Path("uploads")
