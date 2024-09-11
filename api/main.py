@@ -17,7 +17,7 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
-sio = socketio.AsyncServer(async_mode='asgi', cors_allowed_origins=["http://localhost:3000", "*"])
+sio = socketio.AsyncServer(async_mode='asgi', cors_allowed_origins='*')
 app.mount('/', socketio.ASGIApp(sio))
 
 # Directory where files will be stored
