@@ -18,7 +18,7 @@ app.add_middleware(
 )
 
 sio = socketio.AsyncServer(async_mode='asgi')
-app.mount('/ws', socketio.ASGIApp(sio, socketio_path='socket.io'))
+app.mount('/', socketio.ASGIApp(sio))
 
 # Directory where files will be stored
 UPLOAD_DIR = Path("uploads")
